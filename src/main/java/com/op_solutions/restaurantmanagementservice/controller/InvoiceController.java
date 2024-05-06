@@ -1,5 +1,6 @@
 package com.op_solutions.restaurantmanagementservice.controller;
 
+import com.op_solutions.restaurantmanagementservice.dto.InvoiceInputDTO;
 import com.op_solutions.restaurantmanagementservice.entity.Invoice;
 import com.op_solutions.restaurantmanagementservice.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +32,9 @@ public class InvoiceController {
     }
 
     @PostMapping("/invoice")
-    public ResponseEntity<Invoice> saveInvoice(@RequestBody Invoice invoice)
+    public ResponseEntity<Invoice> saveInvoice(@RequestBody InvoiceInputDTO invoiceInputDTO)
     {
-        return null;
+        return invoiceService.saveInvoice(invoiceInputDTO);
     }
 
     @PutMapping("/{invoiceNumber}")

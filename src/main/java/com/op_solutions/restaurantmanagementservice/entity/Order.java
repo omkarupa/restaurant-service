@@ -34,4 +34,7 @@ public class Order {
     private List<ItemOrder> itemsOrderedList;
 
     private BigDecimal totalPrice;
+
+    private String overAllStatus;
+
 }

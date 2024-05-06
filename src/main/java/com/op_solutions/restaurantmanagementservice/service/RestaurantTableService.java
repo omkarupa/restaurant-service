@@ -45,10 +45,14 @@ public class RestaurantTableService {
 
     public ResponseEntity<RestaurantTable> saveRestaurantTable(RestaurantTable restaurantTable)
     {
-        RestaurantTable saveRestaurantTable = restaurantTableRepository.save(restaurantTable);
+        if(restaurantTable != null)
+        {
+            RestaurantTable saveRestaurantTable = restaurantTableRepository.save(restaurantTable);
 
-        return ResponseEntity.ok().body(saveRestaurantTable);
+            return ResponseEntity.ok().body(saveRestaurantTable);
+        }
 
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     public ResponseEntity<RestaurantTable> updateRestaurantTable(RestaurantTable restaurantTable,Integer restaurantTableId)
