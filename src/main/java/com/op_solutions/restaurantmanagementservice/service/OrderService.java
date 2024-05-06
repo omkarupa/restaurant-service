@@ -117,5 +117,21 @@ public class OrderService {
         return  null;
     }
 
+    public List<Order> getOrdersWithKitchenItemStatus(String kitchenItemStatus){
+        String status = "";
+        if(kitchenItemStatus.equals("pending"))
+        {
+            status = "PENDING";
+        }
+        else if (kitchenItemStatus.equals("in-progress"))
+        {
+            status = "INPROGRESS";
+        }
+        else if (kitchenItemStatus.equals("completed"))
+        {
+            status = "COMPLETED";
+        }
 
+        return orderRepository.findOrdersWithKitchenItemStatus(status);
+    }
 }

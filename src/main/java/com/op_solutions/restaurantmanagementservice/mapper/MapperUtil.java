@@ -1,8 +1,6 @@
 package com.op_solutions.restaurantmanagementservice.mapper;
 
-import com.op_solutions.restaurantmanagementservice.dto.InvoiceInputDTO;
-import com.op_solutions.restaurantmanagementservice.dto.ItemOrderInputDTO;
-import com.op_solutions.restaurantmanagementservice.dto.OrderInputDTO;
+import com.op_solutions.restaurantmanagementservice.dto.*;
 import com.op_solutions.restaurantmanagementservice.entity.*;
 import com.op_solutions.restaurantmanagementservice.service.MenuItemService;
 import com.op_solutions.restaurantmanagementservice.service.OrderService;
@@ -64,7 +62,50 @@ public class MapperUtil {
 
     }
 
+    public OrderKitchenDTO mapOrderToOrderKitchenDTO(Order order)
+    {
+        System.out.println(order.toString());
+        
+        List<ItemOrder> itemOrderList = order.getItemsOrderedList();
+        
+        List<ItemOrderedDTO> itemOrderedListDTOList = itemOrderList.stream().map(itemOrder -> mapItemOrderToItemOrderedDTO(itemOrder)).collect(Collectors.toList());
+        
+        OrderKitchenDTO orderKitchenDTO = OrderKitchenDTO.builder()
+                .orderId(order.getOrderId())
+                .staffName(order.getStaff().getStaffName())
+                .tableNumber(order.getRestaurantTable().getTableNumber())
+                .itemOrders(itemOrderedListDTOList)
+                .OverAllStatus(getStatusFromItemOrderedList(itemOrderedListDTOList))
+                .build();
+        return orderKitchenDTO;
+    }
 
+    private String getStatusFromItemOrderedList(List<ItemOrderedDTO> itemOrderedListDTOList) {
+
+        boolean statusCompleted = false;
+
+        List<ItemOrderedDTO> completedOrderList = itemOrderedListDTOList.stream().filter(item -> item.getKitchenItemStatus().equals("COMPLETED")).collect(Collectors.toList());
+
+        if(itemOrderedListDTOList != null && completedOrderList.size() == itemOrderedListDTOList.size())
+        {
+            return "COMPLETED";
+        }
+
+        return "PENDING";
+
+
+    }
+
+    private ItemOrderedDTO mapItemOrderToItemOrderedDTO(ItemOrder itemOrder) {
+            return ItemOrderedDTO.builder()
+                    .itemOrderId(itemOrder.getItemOrderId())
+                    .category(itemOrder.getMenuItem().getCategory())
+                    .itemName(itemOrder.getMenuItem().getItemName())
+                    .ingredients(itemOrder.getMenuItem().getIngredients())
+                    .kitchenItemStatus(itemOrder.getKitchenItemStatus())
+                    .quantity(itemOrder.getQuantity())
+                    .build();
+    }
 
 
 }
