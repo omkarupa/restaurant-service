@@ -10,7 +10,7 @@ pipeline {
     environment {
         GIT_URL = 'https://github.com/omkarupa/restaurant-service.git'
         BRANCH = 'main'
-        COMPOSE_FILE = 'docker-compose.yml'
+        COMPOSE_FILE = 'docker-compose.yaml'
     }
 
     stages {
