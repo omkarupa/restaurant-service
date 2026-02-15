@@ -1,10 +1,8 @@
-version: "3.9"
-
 services:
 
   restaurant-service:
-	build: .
-	    container_name: restaurant-service
+    build: .
+    container_name: restaurant-service
     ports:
       - "8091:8091"
 
@@ -15,5 +13,3 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    depends_on:
-      - restaurant-service
