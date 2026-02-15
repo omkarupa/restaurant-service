@@ -1,37 +1,63 @@
 pipeline {
-	
-	agent any
-	
-	environment {
-        GIT_URL = 'https://github.com/omkarupa/restaurant-service.git' // replace with your Git URL
-        BRANCH = 'main'
+
+    agent any
+
+    options {
+        timestamps()
+        disableConcurrentBuilds()
     }
-	
-	stages{
-		stage('clone Repository'){
-			steps{
-				git branch : "${BRANCH}", url : "${GIT_URL}"
-				
-			}
-		}
-		stage('maven build'){
-			steps{
-				bat 'mvn clean package'
-				
-			}
-		}
-		stage('docker image build'){
-			steps{
-				bat 'docker build -t restaurant-service:1.0 .'
-				
-			}
-		}
-			stage('docker run image in container'){
-			steps{
-				bat 'docker run -d -p 8091:8091 restaurant-service:1.0'
-				
-			}
-		}
-	}
-	
+
+    environment {
+        GIT_URL = 'https://github.com/omkarupa/restaurant-service.git'
+        BRANCH = 'main'
+        COMPOSE_FILE = 'docker-compose.yml'
+    }
+
+    stages {
+
+        stage('Clone Repository') {
+            steps {
+                git branch: "${BRANCH}", url: "${GIT_URL}"
+            }
+        }
+
+        stage('Build Maven Package') {
+            steps {
+                bat 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('Build Containers') {
+            steps {
+                bat "docker compose -f %COMPOSE_FILE% build"
+            }
+        }
+
+        stage('Stop Old Containers') {
+            steps {
+                bat "docker compose -f %COMPOSE_FILE% down"
+            }
+        }
+
+        stage('Deploy Containers') {
+            steps {
+                bat "docker compose -f %COMPOSE_FILE% up -d"
+            }
+        }
+
+        stage('Verify Running Containers') {
+            steps {
+                bat "docker ps"
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Deployment Successful!'
+        }
+        failure {
+            echo '❌ Deployment Failed!'
+        }
+    }
 }

@@ -1,12 +1,19 @@
-version: '3.8'
+version: "3.9"
 
 services:
-	prometheus:
-        image: prom/prometheus:latest
-		network_mode: host
-        volumes:
-            - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-        command:
-            - '--config.file=/etc/prometheus/prometheus.yml'
-        ports:
-            - '9090:9090'
+
+  restaurant-service:
+    image: restaurant-service:latest
+    container_name: restaurant-service
+    ports:
+      - "8091:8091"
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - restaurant-service
